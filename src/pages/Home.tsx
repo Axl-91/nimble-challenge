@@ -50,12 +50,15 @@ function Home({ candidate }: HomeProps) {
       return
     }
 
-    const submitInfo: SubmitInfo = { uuid: candidate.uuid, jobId: jobId, candidateId: candidate.candidateId, repoUrl: githubLink }
+    const submitInfo: SubmitInfo = { uuid: candidate.uuid, jobId: jobId, candidateId: candidate.candidateId, applicationId: candidate.applicationId, repoUrl: githubLink }
 
     await axios.post(`${baseUrl}/api/candidate/apply-to-job`, submitInfo, { headers: { 'Content-Type': 'application/json' } })
       .then((response) => {
         if (response.status === 200) {
           setFlashMessage({ type: "success", message: "Submission successful!" });
+        } else {
+          setFlashMessage({ type: "error", message: "Unknown error" });
+          console.error("Response: ", response);
         }
       }).catch((error) => {
         console.error("Error on submission", error);
