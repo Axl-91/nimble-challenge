@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import type { CandidateInfo } from '../types';
-import { CircularProgress } from '@mui/material';
+import LoadingPage from './LoadingPage';
 
 const SignIn: React.FC = () => {
   const baseUrl: string = import.meta.env.VITE_BASE_URL;
@@ -44,14 +44,7 @@ const SignIn: React.FC = () => {
         <h2 className='text-2xl font-semibold text-center mb-6'>Sign In</h2>
 
         {loading ?
-          (
-            <>
-              <p className='text-xl text-center'>Loading...</p>
-              <p className='text-center py-5'>
-                <CircularProgress />
-              </p>
-            </>
-          )
+          <LoadingPage />
           :
           (
             <>
