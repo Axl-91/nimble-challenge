@@ -37,7 +37,14 @@ function JobsTable({ candidate, jobs }: JobsTableProps) {
       setFlashMessage({ type: 'error', message: `Github Link for: ${jobId} is invalid` });
       return
     }
-    const submitInfo: SubmitInfo = { uuid: candidate.uuid, jobId: jobId, candidateId: candidate.candidateId, applicationId: candidate.applicationId, repoUrl: githubLink }
+
+    const submitInfo: SubmitInfo = {
+      uuid: candidate.uuid,
+      jobId: jobId,
+      candidateId: candidate.candidateId,
+      applicationId: candidate.applicationId,
+      repoUrl: githubLink
+    }
 
     await axios.post(`${baseUrl}/api/candidate/apply-to-job`, submitInfo, { headers: { 'Content-Type': 'application/json' } })
       .then((response) => {
@@ -48,8 +55,8 @@ function JobsTable({ candidate, jobs }: JobsTableProps) {
           console.error('Response: ', response);
         }
       }).catch((error) => {
-        console.error('Error on submission', error);
-        setFlashMessage({ type: 'error', message: 'There was an error on the submission' });
+        console.error('Error on submission', error.response.data);
+        setFlashMessage({ type: 'error', message: `There was an error on the submission: ${error.response.data.error}` });
       }).finally(() => {
         setGithubLinks((prev) => {
           const updatedLinks = { ...prev };
