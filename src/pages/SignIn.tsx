@@ -21,7 +21,7 @@ const SignIn: React.FC = () => {
         const user: CandidateInfo = response.data;
         Cookies.set('candidate', JSON.stringify(user), { expires: 1 });
 
-        navigate("/", { replace: true });
+        navigate('/', { replace: true });
 
       }).catch((error) => {
         if (error.response && error.response.status === 404) {
@@ -46,7 +46,7 @@ const SignIn: React.FC = () => {
         {loading ?
           (
             <>
-              <p className="text-xl text-center">Loading...</p>
+              <p className='text-xl text-center'>Loading...</p>
               <p className='text-center py-5'>
                 <CircularProgress />
               </p>
@@ -55,7 +55,7 @@ const SignIn: React.FC = () => {
           :
           (
             <>
-              {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
+              {error && <p className='text-red-500 text-sm text-center mb-4'>{error}</p>}
               <div className='mb-4'>
                 <label htmlFor='email' className='block text-sm font-medium text-gray-700'>Email</label>
                 <input

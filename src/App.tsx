@@ -16,9 +16,7 @@ function App() {
     if (candidateCookie) {
       try {
         const parsedCandidate: CandidateInfo = JSON.parse(candidateCookie);
-        setTimeout(() => {
-          setCandidateInfo(parsedCandidate);
-        }, 0)
+        setCandidateInfo(parsedCandidate);
       } catch (error) {
         // If cookie is invalid I remove it
         Cookies.remove('candidate');
@@ -33,8 +31,8 @@ function App() {
         <>
           <Navbar candidate={candidateInfo} />
           <Routes>
-            <Route path='/signin' element={candidateInfo ? <Navigate to="/" replace /> : <SignIn />} />
-            <Route path="/" element={candidateInfo ? <Home candidate={candidateInfo} /> : <Navigate to="/signin" replace />} />
+            <Route path='/signin' element={candidateInfo ? <Navigate to='/' replace /> : <SignIn />} />
+            <Route path='/' element={candidateInfo ? <Home candidate={candidateInfo} /> : <Navigate to='/signin' replace />} />
           </Routes>
         </>
       )}
