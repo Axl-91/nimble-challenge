@@ -106,7 +106,7 @@ function Home({ candidate }: HomeProps) {
               <td className="py-2 px-4 w-30 border border-gray-300 text-center">
                 <button
                   onClick={() => handleSubmit(job.id)}
-                  className="bg-violet-600 text-white py-1 px-3 rounded hover:bg-violet-500 cursor-pointer">
+                  className="bg-violet-800 text-white py-1 px-3 rounded hover:bg-violet-500 cursor-pointer">
                   Submit
                 </button>
               </td>
