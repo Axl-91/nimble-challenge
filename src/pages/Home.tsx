@@ -1,8 +1,105 @@
-function Home() {
+import { useEffect, useState } from "react";
+import { type FlashMessageInfo, type CandidateInfo, type JobInfo, type SubmitInfo } from "../types";
+import axios from "axios";
+import { Alert } from "@mui/material";
+
+type HomeProps = {
+  candidate: CandidateInfo;
+}
+
+function Home({ candidate }: HomeProps) {
+  const baseUrl: string = import.meta.env.VITE_BASE_URL;
+  const githubUrl: string = "https://github.com/";
+  const [jobInfo, setJobInfo] = useState<JobInfo[]>([]);
+  const [githubLinks, setGithubLinks] = useState<{ [key: string]: string }>({});
+  const [flashMessage, setFlashMessage] = useState<FlashMessageInfo | null>(null);
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      await axios.get(`${baseUrl}/api/jobs/get-list`)
+        .then((response) => {
+          setJobInfo(response.data);
+        }).catch((error) => {
+          console.error('Fetch Error:', error)
+        })
+    }
+    fetchJobs();
+  }, [baseUrl])
+
+  const handleInputChange = (jobId: string, value: string) => {
+    setGithubLinks((prev) => {
+      const updatedLinks = { ...prev };
+      updatedLinks[jobId] = value;
+      return updatedLinks;
+    });
+  };
+
+  const handleSubmit = async (jobId: string) => {
+    const githubLink = `${githubUrl}${githubLinks[jobId]}`;
+    const submitInfo: SubmitInfo = { uuid: candidate.uuid, jobId: jobId, candidateId: candidate.candidateId, repoUrl: githubLink }
+
+    await axios.post(`${baseUrl}/api/candidate/apply-to-job`, submitInfo, { headers: { 'Content-Type': 'application/json' } })
+      .then((response) => {
+        console.log(response)
+        setFlashMessage({ type: "success", message: "Submission successful!" });
+      }).catch((error) => {
+        console.error("Error on submission", error);
+        setFlashMessage({ type: "error", message: "There was an error on the submission" });
+      }).finally(() => {
+        setGithubLinks((prev) => {
+          const updatedLinks = { ...prev };
+          updatedLinks[jobId] = '';
+          return updatedLinks;
+        });
+      })
+  };
+
   return (
-    <>
-      Hello
-    </>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Hello {candidate.firstName}, here are your job listenings!</h1>
+      {flashMessage && (
+        <div className="text-center pb-4">
+          <Alert variant="outlined" severity={flashMessage.type} onClose={() => { setFlashMessage(null) }}>{flashMessage.message}</Alert>
+        </div>
+      )}
+      <table className="min-w-full bg-white border border-gray-300">
+        <thead>
+          <tr className="bg-violet-700 text-white">
+            <th className="py-2 px-4 border border-gray-300">ID</th>
+            <th className="py-2 px-4 border border-gray-300">Title</th>
+            <th className="py-2 px-4 border border-gray-300">Github Link</th>
+            <th className="py-2 px-4 border border-gray-300">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {jobInfo.map((job) => (
+            <tr key={job.id} className="hover:bg-gray-100">
+              <td className="py-2 px-4 w-50 border border-gray-300">{job.id}</td>
+              <td className="py-2 px-4 border border-gray-300">{job.title}</td>
+              <td className="py-2 px-4 w-150 border border-gray-300">
+                <div className="flex items-center">
+                  <span className="mr-2 w-50">{githubUrl}</span>
+                  <input
+                    type="text"
+                    placeholder="user/repository"
+                    value={githubLinks[job.id] || ''}
+                    onChange={(e) => handleInputChange(job.id, e.target.value)}
+                    className="border border-gray-300 rounded p-1 w-full"
+                  />
+                </div>
+              </td>
+              <td className="py-2 px-4 w-30 border border-gray-300 text-center">
+                <button
+                  onClick={() => handleSubmit(job.id)}
+                  className="bg-violet-600 text-white py-1 px-3 rounded hover:bg-violet-500 cursor-pointer">
+                  Submit
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }
 

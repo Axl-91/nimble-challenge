@@ -7,7 +7,6 @@ type NavBarProps = {
   candidate?: CandidateInfo | null;
 }
 
-
 function NavBar({ candidate }: NavBarProps) {
   const handleSignOut = () => {
     Cookies.remove('candidate');
@@ -25,7 +24,6 @@ function NavBar({ candidate }: NavBarProps) {
         <ul className='flex space-x-4'>
           {candidate ?
             <>
-              <li className='text-white text-xl font-bold mr-8'>Hello, {candidate.firstName}</li>
               <li>
                 <button
                   onClick={handleSignOut}

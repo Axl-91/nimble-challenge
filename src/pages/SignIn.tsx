@@ -3,15 +3,18 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import type { CandidateInfo } from '../types';
+import { CircularProgress } from '@mui/material';
 
 const SignIn: React.FC = () => {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const baseUrl: string = import.meta.env.VITE_BASE_URL;
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
+    setLoading(true);
 
     axios.get(`${baseUrl}/api/candidate/get-by-email?email=${email}`)
       .then((response) => {
@@ -27,6 +30,8 @@ const SignIn: React.FC = () => {
           setError('Unknown error, try again later')
           console.error('Fetch Error:', error)
         }
+      }).finally(() => {
+        setLoading(false);
       })
   };
 
@@ -38,26 +43,39 @@ const SignIn: React.FC = () => {
       >
         <h2 className='text-2xl font-semibold text-center mb-6'>Sign In</h2>
 
-        {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
-
-        <div className='mb-4'>
-          <label htmlFor='email' className='block text-sm font-medium text-gray-700'>Email</label>
-          <input
-            type='email'
-            id='email'
-            value={email}
-            placeholder='example@email.com'
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className='mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-400'
-          />
-        </div>
-        <button
-          type='submit'
-          className='w-full mt-4 bg-violet-600 text-white font-semibold p-2 rounded-md hover:bg-violet-500 transition duration-200 cursor-pointer'
-        >
-          Sign In
-        </button>
+        {loading ?
+          (
+            <>
+              <p className="text-xl text-center">Loading...</p>
+              <p className='text-center py-5'>
+                <CircularProgress />
+              </p>
+            </>
+          )
+          :
+          (
+            <>
+              {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
+              <div className='mb-4'>
+                <label htmlFor='email' className='block text-sm font-medium text-gray-700'>Email</label>
+                <input
+                  type='email'
+                  id='email'
+                  value={email}
+                  placeholder='example@email.com'
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className='mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-400'
+                />
+              </div>
+              <button
+                type='submit'
+                className='w-full mt-4 bg-violet-600 text-white font-semibold p-2 rounded-md hover:bg-violet-500 transition duration-200 cursor-pointer'
+              >
+                Sign In
+              </button>
+            </>
+          )}
       </form>
     </div>
   );
