@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from 'react-router-dom'
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie';
 import Home from './pages/Home'
 import { useEffect, useState } from 'react';
@@ -9,14 +9,13 @@ import type { CandidateInfo } from './types';
 function App() {
   const navigate = useNavigate();
   const [candidateInfo, setCandidateInfo] = useState<CandidateInfo | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const candidateCookie = Cookies.get('candidate');
-    if (!candidateCookie) {
-      navigate("/signin")
-    } else {
+    if (candidateCookie) {
       try {
-        const parsedCandidate = JSON.parse(candidateCookie);
+        const parsedCandidate: CandidateInfo = JSON.parse(candidateCookie);
         setTimeout(() => {
           setCandidateInfo(parsedCandidate);
         }, 0)
@@ -24,19 +23,21 @@ function App() {
         // If cookie is invalid I remove it
         Cookies.remove('candidate');
         console.error('Failed to parse candidate cookie:', error);
-        navigate("/signup");
       }
     }
+    setLoading(false)
   }, [navigate])
   return (
     <main className='h-screen flex flex-col bg-gray-100'>
-      <Navbar candidate={candidateInfo} />
-      <Routes>
-        {candidateInfo ? (
-          <Route path="/" element={<Home candidate={candidateInfo} />} />
-        ) : (<> </>)}
-        <Route path='/signin' element={<SignIn />} />
-      </Routes>
+      {loading ? <></> : (
+        <>
+          <Navbar candidate={candidateInfo} />
+          <Routes>
+            <Route path='/signin' element={candidateInfo ? <Navigate to="/" replace /> : <SignIn />} />
+            <Route path="/" element={candidateInfo ? <Home candidate={candidateInfo} /> : <Navigate to="/signin" replace />} />
+          </Routes>
+        </>
+      )}
     </main>
   )
 }

@@ -7,9 +7,17 @@ type HomeProps = {
   candidate: CandidateInfo;
 }
 
+function isValidGitHubUrl(input: string) {
+  try {
+    const url = new URL(input);
+    return url.hostname === 'github.com' || url.hostname.endsWith('.github.com');
+  } catch (error) {
+    return false;
+  }
+}
+
 function Home({ candidate }: HomeProps) {
   const baseUrl: string = import.meta.env.VITE_BASE_URL;
-  const githubUrl: string = "https://github.com/";
   const [jobInfo, setJobInfo] = useState<JobInfo[]>([]);
   const [githubLinks, setGithubLinks] = useState<{ [key: string]: string }>({});
   const [flashMessage, setFlashMessage] = useState<FlashMessageInfo | null>(null);
@@ -35,13 +43,20 @@ function Home({ candidate }: HomeProps) {
   };
 
   const handleSubmit = async (jobId: string) => {
-    const githubLink = `${githubUrl}${githubLinks[jobId]}`;
+    const githubLink = githubLinks[jobId];
+
+    if (!isValidGitHubUrl(githubLink)) {
+      setFlashMessage({ type: "error", message: `Github Link for: ${jobId} is invalid` });
+      return
+    }
+
     const submitInfo: SubmitInfo = { uuid: candidate.uuid, jobId: jobId, candidateId: candidate.candidateId, repoUrl: githubLink }
 
     await axios.post(`${baseUrl}/api/candidate/apply-to-job`, submitInfo, { headers: { 'Content-Type': 'application/json' } })
       .then((response) => {
-        console.log(response)
-        setFlashMessage({ type: "success", message: "Submission successful!" });
+        if (response.status === 200) {
+          setFlashMessage({ type: "success", message: "Submission successful!" });
+        }
       }).catch((error) => {
         console.error("Error on submission", error);
         setFlashMessage({ type: "error", message: "There was an error on the submission" });
@@ -77,16 +92,13 @@ function Home({ candidate }: HomeProps) {
               <td className="py-2 px-4 w-50 border border-gray-300">{job.id}</td>
               <td className="py-2 px-4 border border-gray-300">{job.title}</td>
               <td className="py-2 px-4 w-150 border border-gray-300">
-                <div className="flex items-center">
-                  <span className="mr-2 w-50">{githubUrl}</span>
-                  <input
-                    type="text"
-                    placeholder="user/repository"
-                    value={githubLinks[job.id] || ''}
-                    onChange={(e) => handleInputChange(job.id, e.target.value)}
-                    className="border border-gray-300 rounded p-1 w-full"
-                  />
-                </div>
+                <input
+                  type="text"
+                  placeholder="https://github.com/user/repository"
+                  value={githubLinks[job.id] || ''}
+                  onChange={(e) => handleInputChange(job.id, e.target.value)}
+                  className="border border-gray-300 rounded p-1 w-full"
+                />
               </td>
               <td className="py-2 px-4 w-30 border border-gray-300 text-center">
                 <button

@@ -21,7 +21,7 @@ const SignIn: React.FC = () => {
         const user: CandidateInfo = response.data;
         Cookies.set('candidate', JSON.stringify(user), { expires: 1 });
 
-        navigate("/");
+        navigate("/", { replace: true });
 
       }).catch((error) => {
         if (error.response && error.response.status === 404) {
