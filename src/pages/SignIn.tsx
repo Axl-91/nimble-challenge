@@ -1,17 +1,33 @@
 import React, { useState, type SyntheticEvent } from 'react';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import type { CandidateInfo } from '../types';
 
 const SignIn: React.FC = () => {
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   const [email, setEmail] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleSubmit = (event: SyntheticEvent) => {
+  const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
-    const user = { id: 1, email: email };
-    Cookies.set('user', JSON.stringify(user), { expires: 1 });
-    console.log('User Logged In', email);
-    navigate("/");
+
+    axios.get(`${baseUrl}/api/candidate/get-by-email?email=${email}`)
+      .then((response) => {
+        const user: CandidateInfo = response.data;
+        Cookies.set('candidate', JSON.stringify(user), { expires: 1 });
+
+        navigate("/");
+
+      }).catch((error) => {
+        if (error.response && error.response.status === 404) {
+          setError('Candidate not found')
+        } else {
+          setError('Unknown error, try again later')
+          console.error('Fetch Error:', error)
+        }
+      })
   };
 
   return (
@@ -21,6 +37,9 @@ const SignIn: React.FC = () => {
         className='bg-white p-8 rounded-lg shadow-md w-96'
       >
         <h2 className='text-2xl font-semibold text-center mb-6'>Sign In</h2>
+
+        {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
+
         <div className='mb-4'>
           <label htmlFor='email' className='block text-sm font-medium text-gray-700'>Email</label>
           <input
@@ -35,7 +54,7 @@ const SignIn: React.FC = () => {
         </div>
         <button
           type='submit'
-          className='w-full mt-4 bg-violet-600 text-white font-semibold p-2 rounded-md hover:bg-violet-500 transition duration-200'
+          className='w-full mt-4 bg-violet-600 text-white font-semibold p-2 rounded-md hover:bg-violet-500 transition duration-200 cursor-pointer'
         >
           Sign In
         </button>
