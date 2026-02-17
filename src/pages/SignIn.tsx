@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import type { CandidateInfo } from '../types';
 import LoadingPage from './LoadingPage';
+import { Alert } from '@mui/material';
 
 const SignIn: React.FC = () => {
   const baseUrl: string = import.meta.env.VITE_BASE_URL;
@@ -24,11 +25,13 @@ const SignIn: React.FC = () => {
         navigate('/', { replace: true });
 
       }).catch((error) => {
-        if (error.response && error.response.status === 404) {
-          setError('Candidate not found')
-        } else {
-          setError('Unknown error, try again later')
-          console.error('Fetch Error:', error)
+        if (error.response) {
+          const errorMsg = error.response.data.error;
+          if (errorMsg) {
+            setError(errorMsg)
+          } else {
+            setError("Unknown error, try again later")
+          }
         }
       }).finally(() => {
         setLoading(false);
@@ -48,9 +51,9 @@ const SignIn: React.FC = () => {
           :
           (
             <>
-              {error && <p className='text-red-500 text-sm text-center mb-4'>{error}</p>}
               <div className='mb-4'>
-                <label htmlFor='email' className='block text-sm font-medium text-gray-700'>Email</label>
+                {error && <Alert variant='outlined' severity='error' >{error}</Alert>}
+                <label htmlFor='email' className='block text-sm font-medium text-gray-700 pt-4'>Email</label>
                 <input
                   type='email'
                   id='email'
