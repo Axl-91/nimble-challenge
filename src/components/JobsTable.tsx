@@ -74,7 +74,7 @@ function JobsTable({ candidate, jobs }: JobsTableProps) {
         </div>
       )}
 
-      <div className='p-2 bg-violet-300 shadow-xl rounded-2xl'>
+      <div className='p-2 bg-violet-300 shadow-xl rounded-sm'>
         <table className='min-w-full bg-white border border-gray-300'>
           <thead>
             <tr className='bg-violet-700 text-white'>
