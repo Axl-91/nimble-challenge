@@ -51,6 +51,7 @@ Upon receiving the request, the endpoint will respond with:
 ```json
 {"ok": true}
 ```
+The endpoint will return an error response with corresponding details if any of the provided values are invalid
 
 ## Start project
 
