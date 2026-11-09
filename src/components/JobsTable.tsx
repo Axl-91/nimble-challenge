@@ -69,39 +69,40 @@ function JobsTable({ candidate, jobs }: JobsTableProps) {
   return (
     <>
       {flashMessage && (
-        <div className='text-center pb-4'>
+        <div className='pb-4'>
           <Alert variant='outlined' severity={flashMessage.type} onClose={() => { setFlashMessage(null) }}>{flashMessage.message}</Alert>
         </div>
       )}
 
-      <div className='p-2 bg-violet-300 shadow-xl rounded-sm'>
-        <table className='min-w-full bg-white border border-gray-300'>
+      <div className='overflow-x-auto rounded-xl bg-violet-300 p-3 shadow-xl'>
+        <table className='min-w-full border-separate border-spacing-0 overflow-hidden rounded-lg bg-white shadow-sm'>
           <thead>
-            <tr className='bg-violet-700 text-white'>
-              <th className='py-2 px-4 border border-gray-300'>ID</th>
-              <th className='py-2 px-4 border border-gray-300'>Title</th>
-              <th className='py-2 px-4 border border-gray-300'>Github Link</th>
-              <th className='py-2 px-4 border border-gray-300'>Action</th>
+            <tr className='bg-violet-700 text-left text-sm font-semibold uppercase tracking-wide text-white'>
+              <th className='whitespace-nowrap px-4 py-3'>ID</th>
+              <th className='px-4 py-3'>Title</th>
+              <th className='px-4 py-3'>Github Link</th>
+              <th className='px-4 py-3 text-center'>Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className='divide-y divide-gray-200'>
             {jobs.map((job) => (
-              <tr key={job.id} className='hover:bg-gray-100'>
-                <td className='py-2 px-4 w-50 border border-gray-300'>{job.id}</td>
-                <td className='py-2 px-4 border border-gray-300'>{job.title}</td>
-                <td className='py-2 px-4 w-150 border border-gray-300'>
+              <tr key={job.id} className='transition-colors duration-150 hover:bg-gray-100'>
+                <td className='whitespace-nowrap px-4 py-3 text-sm text-gray-700'>{job.id}</td>
+                <td className='px-4 py-3 font-medium text-gray-800'>{job.title}</td>
+                <td className='px-4 py-3'>
                   <input
                     type='text'
                     placeholder='https://github.com/user/repository'
                     value={githubLinks[job.id] || ''}
                     onChange={(e) => handleInputChange(job.id, e.target.value)}
-                    className='border border-gray-300 rounded p-1 w-full'
+                    className='w-full min-w-56 rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-400'
                   />
                 </td>
-                <td className='py-2 px-4 w-30 border border-gray-300 text-center'>
+                <td className='px-4 py-3 text-center'>
                   <button
+                    type='button'
                     onClick={() => handleSubmit(job.id)}
-                    className='bg-violet-800 text-white py-1 px-3 rounded hover:bg-violet-500 cursor-pointer'>
+                    className='cursor-pointer rounded-md bg-violet-800 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:-translate-y-0.5 hover:bg-violet-500 hover:shadow-md active:translate-y-0 active:scale-95 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-1'>
                     Submit
                   </button>
                 </td>

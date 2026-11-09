@@ -27,7 +27,7 @@ function NavBar({ candidate }: NavBarProps) {
               <li>
                 <button
                   onClick={handleSignOut}
-                  className='text-white text-xl font-bold hover:underline cursor-pointer'
+                  className='cursor-pointer text-xl font-bold text-white transition-all duration-150 hover:scale-105 hover:underline active:scale-95'
                 >
                   Sign Out
                 </button>

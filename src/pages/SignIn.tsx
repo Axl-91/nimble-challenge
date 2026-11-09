@@ -66,7 +66,7 @@ const SignIn: React.FC = () => {
               </div>
               <button
                 type='submit'
-                className='w-full mt-4 bg-violet-600 text-white font-semibold p-2 rounded-md hover:bg-violet-500 transition duration-200 cursor-pointer'
+                className='mt-4 w-full cursor-pointer rounded-md bg-violet-600 p-2 font-semibold text-white shadow-sm transition-all duration-150 hover:-translate-y-0.5 hover:bg-violet-500 hover:shadow-md active:translate-y-0 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-1'
               >
                 Sign In
               </button>

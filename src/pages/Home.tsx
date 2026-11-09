@@ -29,8 +29,8 @@ function Home({ candidate }: HomeProps) {
   }, [baseUrl])
 
   return (
-    <div className='p-6'>
-      <h1 className='text-2xl font-bold mb-4'>Hello {candidate.firstName}, here are your job listenings!</h1>
+    <div className='w-full px-4 py-6 sm:px-6 lg:px-8'>
+      <h1 className='text-2xl font-bold mb-6'>Hello {candidate.firstName}, here are your job listings!</h1>
       {loading ? <LoadingPage /> : <JobsTable candidate={candidate} jobs={jobs} />}
     </div>
   )
