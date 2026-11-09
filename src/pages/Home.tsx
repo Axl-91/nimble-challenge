@@ -31,7 +31,7 @@ function Home({ candidate }: HomeProps) {
   return (
     <div className='w-full px-4 py-6 sm:px-6 lg:px-8'>
       <h1 className='text-2xl font-bold mb-6'>Hello {candidate.firstName}, here are your job listings!</h1>
-      {loading ? <LoadingPage /> : <JobsTable candidate={candidate} jobs={jobs} />}
+      {loading ? <LoadingPage /> : <JobsTable jobs={jobs} />}
     </div>
   )
 }
