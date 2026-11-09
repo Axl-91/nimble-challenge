@@ -20,13 +20,13 @@ function readCandidateCookie(): CandidateInfo | null {
 }
 
 function App() {
-  const [candidateInfo] = useState<CandidateInfo | null>(() => readCandidateCookie());
+  const [candidateInfo, setCandidateInfo] = useState<CandidateInfo | null>(() => readCandidateCookie());
 
   return (
     <main className='h-screen flex flex-col bg-gray-100'>
       <Navbar candidate={candidateInfo} />
       <Routes>
-        <Route path='/signin' element={candidateInfo ? <Navigate to='/' replace /> : <SignIn />} />
+        <Route path='/signin' element={candidateInfo ? <Navigate to='/' replace /> : <SignIn onSignIn={setCandidateInfo} />} />
         <Route path='/' element={candidateInfo ? <Home candidate={candidateInfo} /> : <Navigate to='/signin' replace />} />
         <Route path='/jobs/:jobId' element={candidateInfo ? <JobApplicationPage candidate={candidateInfo} /> : <Navigate to='/signin' replace />} />
       </Routes>

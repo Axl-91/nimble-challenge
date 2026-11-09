@@ -6,7 +6,11 @@ import type { CandidateInfo } from '../types';
 import LoadingPage from './LoadingPage';
 import { Alert } from '@mui/material';
 
-const SignIn: React.FC = () => {
+type SignInProps = {
+  onSignIn: (candidate: CandidateInfo) => void;
+};
+
+const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
   const baseUrl: string = import.meta.env.VITE_BASE_URL;
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
@@ -21,7 +25,7 @@ const SignIn: React.FC = () => {
       .then((response) => {
         const user: CandidateInfo = response.data;
         Cookies.set('candidate', JSON.stringify(user), { expires: 1 });
-
+        onSignIn(user);
         navigate('/', { replace: true });
 
       }).catch((error) => {
