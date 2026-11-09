@@ -2,19 +2,11 @@ import { Alert } from "@mui/material";
 import { useState } from "react";
 import type { CandidateInfo, FlashMessageInfo, JobInfo, SubmitInfo } from "../types";
 import axios from "axios";
+import { isValidGitHubUrl } from "../utils/validation";
 
 type JobsTableProps = {
   candidate: CandidateInfo;
   jobs: JobInfo[];
-}
-
-function isValidGitHubUrl(input: string) {
-  try {
-    const url = new URL(input);
-    return url.hostname === 'github.com' || url.hostname.endsWith('.github.com');
-  } catch (error) {
-    return false;
-  }
 }
 
 function JobsTable({ candidate, jobs }: JobsTableProps) {
