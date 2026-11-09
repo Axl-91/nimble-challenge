@@ -1,29 +1,26 @@
 import { render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import JobsTable from './JobsTable'
-import type { CandidateInfo, JobInfo } from '../types'
-
-const candidate: CandidateInfo = {
-  uuid: 'candidate-uuid',
-  candidateId: 'candidate-id',
-  applicationId: 'application-id',
-  firstName: 'Ada',
-  lastName: 'Lovelace',
-  email: 'ada@example.com',
-}
+import type { JobInfo } from '../types'
 
 const jobs: JobInfo[] = [{ id: 'job-123', title: 'Frontend Engineer' }]
 
 describe('JobsTable', () => {
-  it('renders job details and actions', () => {
-    render(<JobsTable candidate={candidate} jobs={jobs} />)
+  it('renders job details and an apply action', () => {
+    render(
+      <MemoryRouter>
+        <JobsTable jobs={jobs} />
+      </MemoryRouter>,
+    )
 
     expect(screen.getByRole('columnheader', { name: 'ID' })).toBeInTheDocument()
-    expect(screen.getByRole('columnheader', { name: 'Title' })).toBeInTheDocument()
-    expect(screen.getByRole('columnheader', { name: 'Github Link' })).toBeInTheDocument()
+    expect(screen.getByRole('columnheader', { name: 'Job type' })).toBeInTheDocument()
     expect(screen.getByRole('columnheader', { name: 'Action' })).toBeInTheDocument()
     expect(screen.getByText('job-123')).toBeInTheDocument()
     expect(screen.getByText('Frontend Engineer')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument()
+
+    const applyLink = screen.getByRole('link', { name: 'Apply' })
+    expect(applyLink).toHaveAttribute('href', '/jobs/job-123')
   })
 })
